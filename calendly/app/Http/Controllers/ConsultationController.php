@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Consultation;
 
 class ConsultationController extends Controller
 {
@@ -13,7 +14,9 @@ class ConsultationController extends Controller
      */
     public function index()
     {
-        //
+        $consultations = Consultation::all();
+
+    return view('index', compact('consultations'));
     }
 
     /**
@@ -23,7 +26,7 @@ class ConsultationController extends Controller
      */
     public function create()
     {
-        //
+        return view('create');
     }
 
     /**
@@ -34,7 +37,16 @@ class ConsultationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'titre' => 'required|max:255',
+            'description' => 'required|max:255',
+            'date_début'=> 'required|max:255',
+            'date_fin'=> 'required|max:255',
+        ]);
+    
+        $consultation = Consultation::create($validatedData);
+    
+        return redirect('/consultations')->with('success', 'Consultation créer avec succèss');
     }
 
     /**
@@ -56,7 +68,9 @@ class ConsultationController extends Controller
      */
     public function edit($id)
     {
-        //
+        $consultation = Consultation::findOrFail($id);
+
+        return view('edit', compact('consultation'));
     }
 
     /**
@@ -68,7 +82,16 @@ class ConsultationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'titre' => 'required|max:255',
+            'description' => 'required',
+            'date_debut' => 'date_debut',
+            'date_fin' => 'date_fin'
+        ]);
+    
+        Consultation::whereId($id)->update($validatedData);
+    
+        return redirect('/consultations')->with('success', 'Consultation mise à jour avec succèss');
     }
 
     /**
@@ -79,6 +102,9 @@ class ConsultationController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $consultation = Consultation::findOrFail($id);
+        $consultation->delete();
+    
+        return redirect('/consultations')->with('success', 'Consultation supprimer avec succèss');
     }
 }

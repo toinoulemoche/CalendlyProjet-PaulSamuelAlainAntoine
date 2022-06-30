@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Consultation extends Model
 {
     use HasFactory;
+    protected $fillable = ['titre', 'description', 'date_début', 'date_fin'];
 }
